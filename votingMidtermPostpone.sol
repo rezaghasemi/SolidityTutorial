@@ -12,6 +12,7 @@ contract votingMidtermPostpone {
     mapping (address => bool) votedStudents;
     uint256[2] voteCount;
     uint startTime;
+    uint penaltyValue = 0.05 ether;
     
 
 
@@ -26,13 +27,14 @@ contract votingMidtermPostpone {
         _;
     }
 
-    function voting(uint _vote) payable public  timeRestriction { 
- 
+    function voting(uint _vote)  external payable timeRestriction { 
         if (!votedStudents[msg.sender]){
             votedStudents[msg.sender] = true;
             if (_vote == 0){
                 voteCount[0]++;
             }else{
+                require(msg.value >= penaltyValue);
+                owner.transfer(penaltyValue);
                 voteCount[1]++;
             }
         }
@@ -42,5 +44,8 @@ contract votingMidtermPostpone {
         return (voteCount);
     }
 
+    function getPenaltyValue() public view returns (uint){
+        return (penaltyValue);
+    }
 
 }
