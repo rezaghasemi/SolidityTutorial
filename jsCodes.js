@@ -31,27 +31,62 @@ window.onload = async function () {
           option = {from: account.address};
       }
 
-    //   contractAddress = "";
-    //   contractABI = "";
-    //   myContract = new web3.eth.Contract(contractABI, contractAddress);
+// #############################
 
- document.getElementById("showVoteCountButton").onclick = function(){
-    myContrac.methods.getResults().call(option,function(err,result){
-        if (!err){
-            document.getElementById("showVoteCount").innerHTML = "No,Yes = " + result
+    contractAddress = "0xdc488cc0a4e5cf557a77ebc0e5c84fa7d719d543";
+    contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint256","name":"_vote","type":"uint256"}],"name":"voting","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"getPenaltyValue","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getResults","outputs":[{"internalType":"uint256[2]","name":"","type":"uint256[2]"}],"stateMutability":"view","type":"function"}];
+    myContract = new web3.eth.Contract(contractABI, contractAddress);
+    var penaltyValue;
+
+
+    myContract.methods.getPenaltyValue().call(option,function(error,result){
+        if(!error){
+            penaltyValue = result;
+            document.getElementById("penalty").innerHTML += penaltyValue;
+        };
+      });
+
+
+      document.getElementById("showVoteCountButton").onclick = function(){
+        myContract.methods.getResults().call(option,function(err,result){
+            if (!err){
+                document.getElementById("showVoteCount").innerHTML = "NoOO = " + result[0]+", Yes = " + result[1];
+                
+            }})
+        };
+
+
+        document.getElementById("voteNo").onclick = function(){
+
+            myContract.methods.voting(0).send(option,function(err,result){
+                if (!err){
+                    alert("you voted No!")
+                };
+            });
+            
+        };
+      
+        document.getElementById("voteYes").onclick = function(penalty = penaltyValue){
+            myContract.methods.voting(1).send({from: option, value : penalty}},function(err,result){
+                if(!err){
+                    alert("Great! You voted yes.");
+                };
+
+
+            });
+
 
         }
 
+// ###############################
+    }
 
-    })
 
 
-
- }
+ 
 
       
       
 
   
   
-}

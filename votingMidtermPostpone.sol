@@ -12,7 +12,7 @@ contract votingMidtermPostpone {
     mapping (address => bool) votedStudents;
     uint256[2] voteCount;
     uint startTime;
-    uint penaltyValue = 0.05 ether;
+    uint penaltyValue = 0.005 ether;
     
 
 
